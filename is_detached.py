@@ -1,0 +1,79 @@
+# output a table indicating whether each building_id is detached or attached
+import pandas as pd
+import geopandas as gpd
+from shapely.geometry import MultiLineString
+from tqdm import tqdm
+from datetime import datetime
+
+
+
+#test_area = gpd.read_file('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/consolidatedThesisData.gpkg', layer = 'smallTestArea')
+kreise = gpd.read_file('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/consolidatedThesisData.gpkg', layer = 'kreis')
+crs = kreise.crs
+
+output_table = []
+
+
+######################### Using Loop w/o Spatial Index ############################
+# for index, row in tqdm(temp_indexed_gdf.iterrows(), total=len(temp_indexed_gdf)):
+#     search_area = row.geometry.buffer(1) 
+
+#     nearby_features = temp_indexed_gdf[temp_indexed_gdf.intersects(search_area)]
+
+#     nearby_area = nearby_features['footprint_area'].sum()
+    
+#     temp_indexed_gdf.at[index, 'is_detached'] = (nearby_area - row['footprint_area'] < 25).astype(int)
+
+######################### Using Loop w/ Spatial Index ############################
+#########################https://buntinglabs.com/blog/geopandas-spatial-index-fix-slow-intersections####
+for i, kreis in kreise.iterrows():
+    startTime = datetime.now()
+    mask_area = gpd.GeoDataFrame(geometry = [kreis.geometry], crs = crs)
+
+    gdf = gpd.read_file("/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/EUBUCCO/sachsenEUBUCCO.gpkg", layer = "sachsenEUBUCCO", mask = mask_area)
+    indexed_gdf = gdf.sindex
+    
+    print('Working on kreis ', kreis['KREIS'], "data load time ", datetime.now() -startTime)
+  
+    for index, row in tqdm(gdf.iterrows(), total=len(gdf)):
+        search_area = row.geometry.buffer(1) 
+
+        possible_nearby_index = list(indexed_gdf.query(search_area))
+        possible_nearby = gdf.iloc[possible_nearby_index]
+
+        nearby_features = possible_nearby[possible_nearby.intersects(search_area)]
+
+        nearby_area = nearby_features['footprint_area'].sum()
+        
+        
+        #add the fid and whether or not the building is attached to output table 
+        output_table.append([row['building_id'].astype(int), (nearby_area - row['footprint_area'] < 25).astype(int)])
+
+pd.DataFrame(output_table, columns = ['building_id', 'detached']).to_csv('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/scratch/detached.csv')
+
+#####################  UsinG Apply  ##############################
+# def is_detached(row):
+#     search_area = row.geometry.buffer(1) 
+
+#     nearby_features = temp_indexed_gdf[temp_indexed_gdf.geometry.intersects(search_area)]
+#     nearby_area = nearby_features['footprint_area'].sum()
+    
+#     return (nearby_area - row['footprint_area'] < 25).astype(int)
+
+
+# temp_indexed_gdf['is_detached'] = temp_indexed_gdf.apply(is_detached, axis = 1)
+
+#gdf.to_file('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/scratch/detachedEUBUCCO.shp')
+
+# def is_detached(feature, temp_indexed_gdf):
+#     # Create a MultiLineString with the edges of all other features
+
+#     other_edges = MultiLineString(temp_indexed_gdf.drop(index=feature.name).boundary)
+ 
+#     # Check if the feature's boundary touches any other feature's boundary
+#     return feature.geometry.boundary.touches(other_edges)
+
+# temp_indexed_gdf['detached'] = temp_indexed_gdf.apply(is_detached, args=(temp_indexed_gdf), axis=1)
+
+
+
