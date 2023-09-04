@@ -17,7 +17,7 @@ census = gpd.read_file('/Users/sunshinedaydream/Desktop/thesis_data_local/spatia
 
 
 
-build_type_dict = pd.read_csv('/Users/sunshinedaydream/Desktop/thesis_data_local/non-spatial/building_type_dict.csv')
+build_type_dict = pd.read_csv('/Users/sunshinedaydream/Desktop/thesis_data_local/non-spatial/buildingClassificationDict.csv')
 ####Using candidate censusGrid as a mask initially limits the buildings dataframe to those within 
 # 100m boxes with at least 1 residential building and those w/o dist heat ####
 
