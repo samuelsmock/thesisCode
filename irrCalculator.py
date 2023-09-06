@@ -4,6 +4,8 @@ from plotPrices import plotPrice
 from scipy.optimize import fsolve
 from npvCalculator import npv
 
+### Creates A Grid View of IRRs for specific Buildings and Scenarios ###
+
 candidateBuildings = gpd.read_file('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/consolidatedThesisData.gpkg', layer = "candidateEUBUCCO_MATCHED_CLEANED", rows = slice(204700, 204800))
 
 energyDict = pd.read_csv('/Users/sunshinedaydream/Desktop/thesis_data_local/non-spatial/codeDictionaries/energeticTotalsDict.csv')
