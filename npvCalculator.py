@@ -2,8 +2,9 @@ import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
 from plotPrices import plotPrice
+import json
 
-candidateBuildings = gpd.read_file('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/consolidatedThesisData.gpkg', layer = "candidateEUBUCCO_MATCHED_CLEANED", rows = 50)
+candidateBuildings = gpd.read_file('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/consolidatedThesisData.gpkg', layer = "candidateBuildMatchedCleanedSPF")
 
 
 energyDict = pd.read_csv('/Users/sunshinedaydream/Desktop/thesis_data_local/non-spatial/codeDictionaries/energeticTotalsDict.csv')
@@ -25,7 +26,7 @@ if (len(candidateBuildings[candidateBuildings['SPF'].isnull()]) > 0):
 ### on each building loop through the 15 year period to sum the NPV and add it as a column to 
 # candidate buuldings ###
 
-
+##Returns a series showing the NPV after x number of years.
 def npv(building, energyPrices, scenario, discRate, termStart, termEnd, ffBoilerUsefulLife, upfrontSubsidy): ##building variable is a whole row in the buildings dataset
 
     if ffBoilerUsefulLife < termStart or (upfrontSubsidy !=0 & termStart != 0):
@@ -72,11 +73,6 @@ def npv(building, energyPrices, scenario, discRate, termStart, termEnd, ffBoiler
         #                                                                
         if i < termStart:
             foregoneSavings +=  (year[scenario+'_Gas']/0.9)  * building['yearlySensHeatPerM2'] * building ['living_area'] * (1+ discRate)**(-1 * i) - (year[scenario + '_Elec']/building['SPF'])* building['yearlySensHeatPerM2'] * building ['living_area'] * (1+ discRate)**(-1 * i) 
-                                
-        
-        
-        
-        
 
         # the diff in yearly cost for a HP and gas boiler specific SPF (weightedCOP)
         # and a gas boiler efficiency of 0.9. In euros #### 
@@ -86,7 +82,7 @@ def npv(building, energyPrices, scenario, discRate, termStart, termEnd, ffBoiler
             ffOngoing += -1 * (year[scenario+'_Gas']/0.9)  * building['yearlySensHeatPerM2'] * building ['living_area'] * (1+ discRate)**(-1 * i)
             HPMaintenance += -1 * building['living_area'] * building['upfrontCostPerM2'] *0.01 * (1+ discRate)**(-1 * i)
 
-        npvSeries.append(HPUpfront- ffUpfront  + HPMaintenance + HPOngoing-ffOngoing - foregoneSavings )
+        npvSeries.append(int(HPUpfront- ffUpfront  + HPMaintenance + HPOngoing-ffOngoing - foregoneSavings))
 
 
     
@@ -94,18 +90,59 @@ def npv(building, energyPrices, scenario, discRate, termStart, termEnd, ffBoiler
     #return HPUpfront - ffUpfront + HPOngoing - ffOngoing
     
 ### Initialialize to make it easy to quickly run models
+testParameters = [
+    {
+    'termStart': 0,
+    'termEnd': 20,
+    'ffBoilerUsefulLife':  0,
+    'upfrontSubsidy': 0},
+    {
+    'termStart': 0,
+    'termEnd': 20,
+    'ffBoilerUsefulLife':  0,
+    'upfrontSubsidy': 0.3},
+    {
+    'termStart': 5,
+    'termEnd': 25,
+    'ffBoilerUsefulLife':  5,
+    'upfrontSubsidy': 0},
+    
+    {
+    'termStart': 0,
+    'termEnd': 20,
+    'ffBoilerUsefulLife':  10,
+    'upfrontSubsidy': 0},
 
-repDisc = 0.022  
-remLife = 100000
-start = 0
-end = 20
-subsidy = 0
+    {
+    'termStart': 0,
+    'termEnd': 20,
+    'ffBoilerUsefulLife':  10000000000,
+    'upfrontSubsidy': 0},
 
-candidateBuildings['scn1_npv'] = candidateBuildings.apply(npv, args = (priceDict, 'scn1', repDisc, start, end, remLife, subsidy), axis = 1)
-candidateBuildings['scn2_npv'] = candidateBuildings.apply(npv, args = (priceDict, 'scn2', repDisc, start, end, remLife,subsidy), axis = 1)
-candidateBuildings['scn3_npv'] = candidateBuildings.apply(npv, args = (priceDict, 'scn3', repDisc, start, end, remLife, subsidy), axis = 1)
-candidateBuildings['hist_npv'] = candidateBuildings.apply(npv, args = (priceDict, 'hist', repDisc, start, end, remLife, subsidy), axis = 1)
+    {
+    'termStart': 0,
+    'termEnd': 20,
+    'ffBoilerUsefulLife':  10000000000,
+    'upfrontSubsidy': 0.3}
+]
 
+scnList = ['scn1', 'scn2', 'scn3', 'hist']
+
+def scenarioPopulator(bld):
+    result = {} # the result will be a python dictionary later it will be converted to a JSON object
+    
+    for scn in scnList:
+        result[scn] = []
+        for param in testParameters:
+                result[scn].append(npv(building = bld, discRate = 0.028, scenario= scn, energyPrices = priceDict, **param)[19])
+
+    return json.dumps(result)
+
+candidateBuildings['npvs'] = candidateBuildings.apply(scenarioPopulator, axis = 1)
+
+print(candidateBuildings.memory_usage(deep=True).sum())
+
+candidateBuildings.to_file('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/scratch/test15.shp')
 # Plot the columns 'a', 'b', and 'c' on the same graph
 
 
@@ -132,5 +169,5 @@ def plotNPV():
     # Show the plot
     plt.show()
 
-plotNPV()
+#plotNPV()
 #candidateBuildings.to_csv('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/scratch/test11.csv')
