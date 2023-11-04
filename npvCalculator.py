@@ -5,7 +5,7 @@ from plotPrices import plotPrice
 import json
 from tqdm import tqdm
 
-candidateBuildings = gpd.read_file('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/consolidatedThesisData.gpkg', layer = "candidateBuildMatchedCleanedSPF")
+candidateBuildings = gpd.read_file('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/consolidatedThesisData.gpkg', layer = "candidateBuildMatchedCleanedSPF", rows = 100)
 
 
 energyDict = pd.read_csv('/Users/sunshinedaydream/Desktop/thesis_data_local/non-spatial/codeDictionaries/energeticTotalsDict.csv')
@@ -89,7 +89,7 @@ def npv(building, energyPrices, scenario, discRate, termStart, termEnd, ffBoiler
         ####### Install costs are taken to be about 60% cheaper than a HP in 2024, and are taken as constant unlike the HP which 
         #######is assumed to get cheaper as time goes on. ###########################
 
-        #######  IF the user does not want to consider this term,s et ffBoilerUSefulLife to infinity ######################
+        #######  IF the user does not want to consider this term, set ffBoilerUSefulLife to infinity ######################
         
         if i == ffBoilerUsefulLife:
             ffUpfront = -1 * building['living_area'] * building['upfrontCostPerM2'] * 0.4 * (1+discRate)**(-1*(ffBoilerUsefulLife))
@@ -115,7 +115,7 @@ def npv(building, energyPrices, scenario, discRate, termStart, termEnd, ffBoiler
     return npvSeries
     #return HPUpfront - ffUpfront + HPOngoing - ffOngoing
 
-#(npv(candidateBuildings.loc[0], energyDict, 'scn1', 0.028, 1, 20, 100000, 0))
+(npv(candidateBuildings.loc[0], energyDict, 'scn1', 0.028, 1, 20, 100000, 0.3))
 
 ### Each Item in this list represents a specific scenario we would like to investigate ##
 testParameters = [
@@ -186,14 +186,14 @@ def scenarioPopulator(bld):
 
 tqdm.pandas()
 
-candidateBuildings['npvs'] = candidateBuildings.progress_apply(scenarioPopulator, axis = 1)
+#candidateBuildings['npvs'] = candidateBuildings.progress_apply(scenarioPopulator, axis = 1)
 
 print(candidateBuildings.memory_usage(deep=True).sum())
 
-candidateBuildings.to_file('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/scratch/test15.shp')
+#candidateBuildings.to_file('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/scratch/test15.shp')
 # Plot the columns 'a', 'b', and 'c' on the same graph
 
 
 
-#plotNPV()
+plotNPV()
 #candidateBuildings.to_csv('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/scratch/test11.csv')

@@ -46,7 +46,11 @@ for i, kreis in kreise.iterrows():
         nearby_area = nearby_features['footprint_area'].sum()
         
         
-        #add the fid and whether or not the building is attached to output table 
+        # add the fid and whether or not the building is attached to output table the logical expression
+        # nearby_area - row['footprint_area'] < 25 is there because a building is only considered attached if
+        # the area of the adjacent stucture is over 25m2. This allows buildings that for instance have an 
+        # attached garage or shed to be classified as unattahced
+        
         output_table.append([row['building_id'].astype(int), (nearby_area - row['footprint_area'] < 25).astype(int)])
 
 pd.DataFrame(output_table, columns = ['building_id', 'detached']).to_csv('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/scratch/detached.csv')
