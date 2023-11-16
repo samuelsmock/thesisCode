@@ -25,8 +25,8 @@ def emissionCalc(bldg, termStart): #missions only affected by the building chara
         if i > termStart:
             emissionSaving += bldg['yearlySensHeatPerM2'] * bldg['living_are'] * \
                 ((year['co2Intensity']/bldg['spf']) - 232) 
-            ## Emission intensity of 232 kGeq/kWhth for fossil fuel heating obtained from weighted average based on usage
-            ## 205 kGeq/kWhth for ng and 272 kGeq/kWhth for heating oil, weighted 60/40 (CarbonIndependent.org, 2019 & BDEW, 2022)
+            ## Emission intensity of 232 Geq/kWhth for fossil fuel heating obtained from weighted average based on usage
+            ## 205 Geq/kWhth for ng and 272 Geq/kWhth for heating oil, weighted 60/40 (CarbonIndependent.org, 2019 & BDEW, 2022)
 
     return int(emissionSaving/1000000) # factor of 10^6 goes from g/kWh -> tons/kWh
 

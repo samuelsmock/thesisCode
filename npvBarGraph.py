@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 
 
-scenario = 'scn'
-param = 1
+scenario = 'scn3'
+param = 0
 
 candidateBuildings = gpd.read_file('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/consolidatedThesisData.gpkg', layer = 'buildingsFinalFormatted')
 candidateBuildings = candidateBuildings.drop(columns = 'geometry')
@@ -60,15 +60,15 @@ print(combinedAvgs)
 xlabels= ['1 Freestanding']
 
 ########### PLOT ##################
-plt.bar(combinedAvgs['assigned_t'], combinedAvgs['avgNPVPerM2'], label = "Average NPV to Building Owner", zorder = 0, color = '#8c34eb', alpha = 0.8)
+plt.bar(combinedAvgs['assigned_t'], combinedAvgs['tempNPV'], label = "Average NPV to Building Owner", zorder = 0, alpha = 0.8)
 
-plt.bar(combinedAvgs['assigned_t'], combinedAvgs['avgSubPerM2'], label = "Of Which From Subsidy / HPT guarantee", color = '#36ba06', zorder = 1, alpha = 0.8)
+#plt.bar(combinedAvgs['assigned_t'], combinedAvgs['avgSubPerM2'], label = "Of Which From Subsidy / HPT guarantee", color = '#36ba06', zorder = 1, alpha = 0.8)
 
 
 
 plt.xlabel('Building Size Category')
-plt.ylabel('Average 20 Year NPV per m2 @ r= 2.8%')
-plt.title('Average Total NPV per m2 by Residential Building Type; '+ str(scenario) + "; test parameter set " + str(param))
+plt.ylabel('Average 20 Year NPV @ r= 2.8%')
+plt.title('Average Total NPV by Residential Building Type; '+ str(scenario) + "; test parameter set " + str(param))
 plt.legend()
 
 plt.show()

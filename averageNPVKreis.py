@@ -13,13 +13,13 @@ allBuildings = ['siz_1_free', 'siz_1_row', 'siz_1_semi', 'siz_2_free', 'siz_2_se
 
 scenario = 'scn1'
 param = 1
-buildingSet = largeBuildings ##small Buildings or bigBuildings
+buildingSet = smallBuildings ##small Buildings or bigBuildings
 
 
 kreis = gpd.read_file('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/consolidatedThesisData.gpkg', layer = 'kreisRepro')
 candidateBuildings = gpd.read_file('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/consolidatedThesisData.gpkg', layer = 'buildingsFinalFormatted')
 
-candidateBuildings = candidateBuildings[candidateBuildings['assigned_t'].isin(smallBuildings)]
+candidateBuildings = candidateBuildings[candidateBuildings['assigned_t'].isin(buildingSet)]
 
 def jsonLoader(row): #some rows have the trailing '}' dropped
     if row[-1] != '}':
@@ -45,4 +45,4 @@ averageNPVbyKreis = candidateBuildings.groupby("KREIS")["netPresVal"].mean().res
 # merge back to the kreis file
 kreis = kreis.merge(averageNPVbyKreis, on = "KREIS")
 
-kreis.to_file('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/consolidatedThesisData.gpkg', layer = 'large_'+ str(scenario) + '_'+ str(param), driver = 'GPKG')
+kreis.to_file('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/consolidatedThesisData.gpkg', layer = 'smallBuild_'+ str(scenario) + '_'+ str(param), driver = 'GPKG')
