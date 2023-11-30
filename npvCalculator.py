@@ -1,3 +1,13 @@
+### Calculates the NPV for each structure by looping through years 2024-2044 and calculating
+### discounted cash flows for upfront costs, energy savings, foregone energy savings, and the counterfactual ff 
+### boiler replacement costs. It then populates a 2 dimensional data structure consisting of a dictionary
+### of arrays for each comibnation of energy price pathway and parameter set in the function scenarioPopulator. 
+### The dictionary has keys of price pathway and values of arrays for each parameter set
+### To make sense of this later the array index must be compared to the list, testParameters
+
+### Includes helper function plotNPV() to optionally plot the evolution of NPV over time
+
+
 import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
@@ -191,9 +201,6 @@ tqdm.pandas()
 print(candidateBuildings.memory_usage(deep=True).sum())
 
 #candidateBuildings.to_file('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/scratch/test15.shp')
-# Plot the columns 'a', 'b', and 'c' on the same graph
 
 
-
-plotNPV()
 #candidateBuildings.to_csv('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/scratch/test11.csv')

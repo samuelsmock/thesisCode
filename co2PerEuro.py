@@ -1,4 +1,7 @@
-##### produces
+##### produces a bar graph for the the amount of carbon savings per euro invested in the form of
+## upfront subsidy and hpt price support. Allows the selection of price pathway (scenario)
+## parameter set (note that only install year impacts carbon savings) and selection of buildings subset
+## (large or small buildings)
 
 import geopandas as gpd
 import pandas as pd

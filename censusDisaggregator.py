@@ -1,3 +1,13 @@
+## This script downscales (disaggregates) census data from 100m grids (enumeration areas)
+## by attempting to assign the building size classifications to specific buildings within each
+## grid. It makes use of the code dictionary buildingClassificationDict.csv which contains 
+## common sense limits for living area, floors, and attachment for each classification.
+
+## Operationally, it loops through all the grids, finding intersecting buildings along the way,
+## Then, through a nested loop, goes through each of the 10 building size classifications
+## and checks for the number of matches within that grid.
+## Probably the biggest source of error occurs if there are tooo many matches,
+## as the script will just randomly assign the census tally to potential matches
 
 
 import geopandas as gpd
@@ -181,5 +191,7 @@ def censusReconciler (censusGrid, buildings, buildDict):
 #result = 
 censusReconciler(census,eubucco, build_type_dict)
 
+## export the data as a non spatial csv, with only building ids and assigned classification
+## this is simply for file size management, and will later be joined in qgis
 
-#pd.DataFrame(columns = ['building_id', 'type'], data = result).to_csv('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/scratch/testRecon1.csv')
+pd.DataFrame(columns = ['building_id', 'type'], data = result).to_csv('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/scratch/testRecon1.csv')

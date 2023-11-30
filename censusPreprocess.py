@@ -1,3 +1,8 @@
+#This script reads the long format census data, filters to include only info on heating system,
+#building size and construction style. Later on it was decided to only use size and heat data.
+#It also pivots the data on grid id (GITTER_ID_100M) so that there is only one ntry for each square
+
+
 import pandas as pd
 
 
@@ -7,10 +12,10 @@ import pandas as pd
 
 
 
-# Read the CSV file into a pandas DataFrame
+# Read apartment data
 df = pd.read_csv('C:/Users/smock/Desktop/thesis_data_local/spatial_data/2011census/csv_Wohnungen_100m_Gitter/Wohnungen100m.csv', encoding = 'cp1252')
 
-# Filter the DataFrame to only include rows where MERKMAL of interest
+# Filter the DataFrame to only include rows with MERKMAL of interest
 df = df[df['Merkmal'].isin(['HEIZTYP','GEBAEUDEART_SYS', 'GEBTYPBAUWEISE', 'GEBTYPGROESSE'])]
         # ])]  
 

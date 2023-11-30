@@ -1,3 +1,8 @@
+## Performs several building preprocessing tasks including filtering known nonresidential structures
+## merging with the output of is_detached.py and making the estimation of # of stories from building height
+
+import geopandas as gpd
+import pandas as pd
 ##limit area for small testing runs##
 test_area = gpd.read_file('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/consolidatedThesisData.gpkg', layer = 'smallTestArea')
 

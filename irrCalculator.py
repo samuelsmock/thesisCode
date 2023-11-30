@@ -1,3 +1,11 @@
+### This script rearranges the NPV equation from npvCalculator.py taking things
+### like installation year, subsidy, and energy price pathways as constant, and in doing so
+### makes NPV solely a function of discount rate, r.
+
+### It then uses a numerical solver, fsolve() from scipy to solve for NPV(r)|20yr = 0
+### at which value r= IRR. The numerical solver is necessary because several scenarios 
+### have temporal discontinuities 
+
 import pandas as pd
 import geopandas as gpd
 from plotPrices import plotPrice

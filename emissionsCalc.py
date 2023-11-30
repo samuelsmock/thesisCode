@@ -1,8 +1,19 @@
+### loops through a 20 year period, and tallies the difference of emissions for a
+### given structure based on its heat loads and the emissions intensity of power generation
+### in germany for that year (that data is also contained in priceDict.csv).
+
+### Assumes a weighted average of heat oil and natural gas emissions based on saxon building
+### stock to handle the lack of fuel data. In reality a given building will
+### either have one fuel type or another, so one should be careful in treating the results as only valid
+### when aggregated.
+
+### Along the way, a column for the yearly electricity demand of a heat pumnp for each
+### structure is also added
+
 import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
 from plotPrices import plotPrice
-import json
 from tqdm import tqdm
 
 candidateBuildings = gpd.read_file('/Users/sunshinedaydream/Desktop/thesis_data_local/spatial_data/consolidatedThesisData.gpkg', layer = "buildingsNPVCost")

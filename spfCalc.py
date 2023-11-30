@@ -1,3 +1,13 @@
+### Looks up COP value for each month from copDict.csv and creates a weighted average of 
+### using the modelled mnthly heat loads as the weighting factor
+
+### Monthly loads are modelled in reference to 2 sample structures modelled by
+### Zangheri et. al. (2014) in berlin, germany using energyPlus. Loads are then scaled in proportiuon 
+### to the difference in outdoor to indoor air temperature
+
+### Monthly loads are saved in a 13 element list consisting of each month plus the yearly total 
+### SPF is saved as a single float value
+
 import pandas as pd
 import geopandas as gpd
 import rasterio 

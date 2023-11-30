@@ -1,7 +1,7 @@
 ##### displays a bar graph of NPVs under the stipulated price scenario and parameter set. displays the total value
 ## and the portion that is subsidized. Toggle between scenario and parameter by changing
 ##variable values on line 12 and 13. Change between total NPV or NPV per m2 by changing the 
-##plot columns on line 63 and 65 options are: tempNPV   tempSubCost  avgNPVPerM2  avgSubPerM2
+##plot columns on line 63 and 6. The options are: tempNPV   tempSubCost  avgNPVPerM2  avgSubPerM2
 ##
 import geopandas as gpd
 import pandas as pd

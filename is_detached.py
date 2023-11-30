@@ -1,4 +1,11 @@
-# output a table indicating whether each building_id is detached or attached
+### output a table indicating whether each building_id is detached or attached
+### there is a computational problem that must be solved to avoid checking the entire
+### data set for intersection for each building. This is solved through creation of a 
+### spatial index and creating a potential intersects subset using a 1m buffer
+
+### Some alternate methods are included which are commented out but are included 
+### to show how the chosen method is optimal
+
 import pandas as pd
 import geopandas as gpd
 from shapely.geometry import MultiLineString
